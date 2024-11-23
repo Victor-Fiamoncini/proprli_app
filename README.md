@@ -13,9 +13,11 @@ Backend PHP-8/Laravel project for Proprli.
 To start properly you must have PHP v8.1.0 and Composer v2.8.3 installed on your environment. I used the ASDF runtime manager to deal with multiple programming languagens and it's versions.
 
 ```bash
+cp .env.example .env # Creates a new environment variables file
+
 composer install # Installs the dependencies
 
-cp .env.example .env # Creates a new environment variables file
+php artisan key:generate # Generates a new APP_KEY value and stores it in .env
 
 ./vendor/bin/sail up # Creates and starts both laravel and psql containers using Sail
 
