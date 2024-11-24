@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('tasks', TaskController::class)->only(['store']);
+Route::apiResource('buildings.tasks', TaskController::class)->only(['store']);

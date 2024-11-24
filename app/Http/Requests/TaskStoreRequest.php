@@ -25,7 +25,6 @@ class TaskStoreRequest extends FormRequest
             'name' => 'required|string|max:100',
             'description' => 'required|string',
             'status' => 'required|in:OPEN,IN_PROGRESS,COMPLETED,REJECTED',
-            'building_id' => 'required|integer|exists:buildings,id',
             'assigned_user_id' => 'required|integer|exists:users,id',
             'creator_user_id' => 'required|integer|exists:users,id',
         ];
