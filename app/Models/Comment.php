@@ -26,10 +26,10 @@ class Comment extends Model
     use HasFactory;
 
     /**
-      * The attributes that are mass assignable.
-      *
-      * @var array<int, string>
-      */
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'content',
         'task_id',
@@ -47,10 +47,10 @@ class Comment extends Model
     }
 
     /**
-      * Gets the comment creator user
-      *
-      * @return BelongsTo
-      */
+     * Gets the comment creator user
+     *
+     * @return BelongsTo
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class);

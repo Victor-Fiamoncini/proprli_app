@@ -32,11 +32,6 @@ class Task extends Model
 {
     use HasFactory;
 
-    public const OPEN = 'OPEN';
-    public const IN_PROGRESS = 'IN_PROGRESS';
-    public const COMPLETED = 'COMPLETED';
-    public const REJECTED = 'REJECTED';
-
     /**
      * The attributes that are mass assignable.
      *
