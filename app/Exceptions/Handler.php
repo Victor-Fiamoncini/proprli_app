@@ -2,6 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Core\Domain\Exceptions\AssignedUserNotFoundException;
+use App\Core\Domain\Exceptions\CreatorUserNotFoundException;
+use App\Core\Domain\Exceptions\InvalidTaskStatusException;
+use App\Core\Domain\Exceptions\UnauthorizedAttachedTeamException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -26,5 +30,29 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Throwable $e
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof InvalidTaskStatusException) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+
+        if ($e instanceof AssignedUserNotFoundException || $e instanceof CreatorUserNotFoundException) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+
+        if ($e instanceof UnauthorizedAttachedTeamException) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+
+        return parent::render($request, $e);
     }
 }
