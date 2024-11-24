@@ -6,7 +6,9 @@ use App\Core\Domain\Exceptions\AssignedUserNotFoundException;
 use App\Core\Domain\Exceptions\CreatorUserNotFoundException;
 use App\Core\Domain\Exceptions\InvalidTaskStatusException;
 use App\Core\Domain\Exceptions\UnauthorizedAttachedTeamException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,6 +43,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
+        if ($e instanceof ModelNotFoundException) {
+            $model = class_basename($e->getModel());
+
+            return response()->json([
+                'error' => 'Resource not found',
+                'message' => "The requested $model was not found with provided params",
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         if ($e instanceof InvalidTaskStatusException) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
