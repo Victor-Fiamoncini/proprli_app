@@ -37,7 +37,7 @@ class TaskController extends Controller
 
         $this->storeTaskUseCase->storeTask($payload);
 
-        return response()->noContent();
+        return response()->noContent(Response::HTTP_CREATED);
 
     }
 }
