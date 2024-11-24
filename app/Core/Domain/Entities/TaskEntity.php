@@ -14,6 +14,16 @@ enum TaskStatus: string
 
 class TaskEntity
 {
+    /**
+     * TaskEntity contructor
+     *
+     * @param string $name
+     * @param string $description
+     * @param string $status
+     * @param int $buildingId
+     * @param int $assignedUserId
+     * @param int $creatorUserId
+     */
     public function __construct(
         public readonly string $name,
         public readonly string $description,
