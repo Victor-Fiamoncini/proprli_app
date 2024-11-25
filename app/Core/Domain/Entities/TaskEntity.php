@@ -36,4 +36,18 @@ class TaskEntity
             throw new InvalidTaskStatusException();
         }
     }
+
+    /**
+     * Checks if the task can be commented by the provided user
+     *
+     * @param UserEntity $userWhoWillComent
+     * @param UserEntity $userAssignedToTheTask
+     * @return boolean
+     */
+    public function canComment(UserEntity $userWhoWillComent, UserEntity $userAssignedToTheTask): bool
+    {
+        return $this->assignedUserId === $userWhoWillComent->id
+            || $this->creatorUserId === $userWhoWillComent->id
+            || $userWhoWillComent->teamId === $userAssignedToTheTask->teamId;
+    }
 }
