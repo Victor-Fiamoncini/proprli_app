@@ -23,6 +23,7 @@ class TaskEntity
      * @param int $buildingId
      * @param int $assignedUserId
      * @param int $creatorUserId
+     * @param CommentEntity[] $comments
      */
     public function __construct(
         public readonly string $name,
@@ -30,7 +31,8 @@ class TaskEntity
         public readonly string $status,
         public readonly int $buildingId,
         public readonly int $assignedUserId,
-        public readonly int $creatorUserId
+        public readonly int $creatorUserId,
+        public readonly array $comments = []
     ) {
         if (!TaskStatus::tryFrom($this->status)) {
             throw new InvalidTaskStatusException();
