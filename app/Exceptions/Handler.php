@@ -5,7 +5,9 @@ namespace App\Exceptions;
 use App\Core\Domain\Exceptions\AssignedUserNotFoundException;
 use App\Core\Domain\Exceptions\CreatorUserNotFoundException;
 use App\Core\Domain\Exceptions\InvalidTaskStatusException;
+use App\Core\Domain\Exceptions\TaskNotFoundException;
 use App\Core\Domain\Exceptions\UnauthorizedAttachedTeamException;
+use App\Core\Domain\Exceptions\UnauthorizedToCommentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
@@ -56,11 +58,18 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        if ($e instanceof AssignedUserNotFoundException || $e instanceof CreatorUserNotFoundException) {
+        if (
+            $e instanceof AssignedUserNotFoundException ||
+            $e instanceof CreatorUserNotFoundException ||
+            $e instanceof TaskNotFoundException
+        ) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
 
-        if ($e instanceof UnauthorizedAttachedTeamException) {
+        if (
+            $e instanceof UnauthorizedAttachedTeamException ||
+            $e instanceof UnauthorizedToCommentException
+        ) {
             return response()->json(['error' => $e->getMessage()], 401);
         }
 
