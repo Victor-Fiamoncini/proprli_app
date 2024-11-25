@@ -37,7 +37,7 @@ class EloquentTaskRepository implements TaskRepository
     /**
      * Stores a new task
      *
-     * @param TaskEntity $task
+     * @param TaskEntity $taskEntity
      * @return void
      */
     public function store(TaskEntity $taskEntity): void
