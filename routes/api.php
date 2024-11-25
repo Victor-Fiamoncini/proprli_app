@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('buildings.tasks', TaskController::class)->only(['store']);
+Route::apiResource('tasks.comments', CommentController::class)->only(['store']);
