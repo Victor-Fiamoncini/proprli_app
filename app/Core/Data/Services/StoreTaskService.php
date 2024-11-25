@@ -52,6 +52,7 @@ class StoreTaskService implements StoreTaskUseCase
         }
 
         $taskToStore = new TaskEntity(
+            id: null,
             name: $payload['name'],
             description: $payload['description'],
             status: $payload['status'],

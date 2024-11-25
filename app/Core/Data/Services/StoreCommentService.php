@@ -59,6 +59,7 @@ class StoreCommentService implements StoreCommentUseCase
         }
 
         $commentToStore = new CommentEntity(
+            id: null,
             content: $payload['content'],
             taskId: $payload['task_id'],
             creatorUserId: $payload['creator_user_id']

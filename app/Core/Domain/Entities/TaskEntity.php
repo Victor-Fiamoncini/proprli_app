@@ -17,6 +17,7 @@ class TaskEntity
     /**
      * TaskEntity contructor
      *
+     * @param ?int $id
      * @param string $name
      * @param string $description
      * @param string $status
@@ -26,6 +27,7 @@ class TaskEntity
      * @param CommentEntity[] $comments
      */
     public function __construct(
+        public readonly ?int $id,
         public readonly string $name,
         public readonly string $description,
         public readonly string $status,
