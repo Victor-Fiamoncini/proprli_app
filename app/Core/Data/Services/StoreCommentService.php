@@ -5,7 +5,7 @@ namespace App\Core\Data\Services;
 use App\Core\Data\Repositories\CommentRepository;
 use App\Core\Data\Repositories\TaskRepository;
 use App\Core\Data\Repositories\UserRepository;
-use App\Core\Domain\Entities\CommentEntity;
+use App\Core\Domain\Builders\CommentEntityBuilder;
 use App\Core\Domain\Exceptions\CreatorUserNotFoundException;
 use App\Core\Domain\Exceptions\TaskNotFoundException;
 use App\Core\Domain\Exceptions\UnauthorizedToCommentException;
@@ -58,12 +58,11 @@ class StoreCommentService implements StoreCommentUseCase
             throw new UnauthorizedToCommentException();
         }
 
-        $commentToStore = new CommentEntity(
-            id: null,
-            content: $payload['content'],
-            taskId: $payload['task_id'],
-            creatorUserId: $payload['creator_user_id']
-        );
+        $commentEntityBuilder = new CommentEntityBuilder();
+        $commentToStore = $commentEntityBuilder->setContent($payload['content'])
+            ->setTaskId($payload['task_id'])
+            ->setCreatorUserId($payload['creator_user_id'])
+            ->build();
 
         $this->commentRepository->store($commentToStore);
     }
