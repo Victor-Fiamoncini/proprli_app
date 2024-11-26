@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Core\Data\Services\FetchTasksService;
 use App\Core\Data\Services\StoreCommentService;
 use App\Core\Data\Services\StoreTaskService;
+use App\Core\Domain\UseCases\FetchTasksUseCase;
 use App\Core\Domain\UseCases\StoreCommentUseCase;
 use App\Core\Domain\UseCases\StoreTaskUseCase;
 use App\Core\Infra\Repositories\EloquentCommentRepository;
@@ -18,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(FetchTasksUseCase::class, function ($app) {
+            return new FetchTasksService($app->make(EloquentTaskRepository::class));
+        });
+
         $this->app->singleton(StoreTaskUseCase::class, function ($app) {
             return new StoreTaskService(
                 userRepository: $app->make(EloquentUserRepository::class),
