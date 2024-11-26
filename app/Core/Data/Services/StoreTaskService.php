@@ -4,7 +4,7 @@ namespace App\Core\Data\Services;
 
 use App\Core\Data\Repositories\TaskRepository;
 use App\Core\Data\Repositories\UserRepository;
-use App\Core\Domain\Entities\TaskEntity;
+use App\Core\Domain\Builders\TaskEntityBuilder;
 use App\Core\Domain\Exceptions\AssignedUserNotFoundException;
 use App\Core\Domain\Exceptions\CreatorUserNotFoundException;
 use App\Core\Domain\Exceptions\UnauthorizedAttachedTeamException;
@@ -51,15 +51,14 @@ class StoreTaskService implements StoreTaskUseCase
             throw new UnauthorizedAttachedTeamException();
         }
 
-        $taskToStore = new TaskEntity(
-            id: null,
-            name: $payload['name'],
-            description: $payload['description'],
-            status: $payload['status'],
-            buildingId: $payload['building_id'],
-            assignedUserId: $payload['assigned_user_id'],
-            creatorUserId: $payload['creator_user_id']
-        );
+        $taskEntityBuilder = new TaskEntityBuilder();
+        $taskToStore = $taskEntityBuilder->setName($payload['name'])
+            ->setDescription($payload['description'])
+            ->setStatus($payload['status'])
+            ->setBuildingId($payload['building_id'])
+            ->setAssignedUserId($payload['assigned_user_id'])
+            ->setCreatorUserId($payload['creator_user_id'])
+            ->build();
 
         $this->taskRepository->store($taskToStore);
     }
