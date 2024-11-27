@@ -8,6 +8,9 @@ use App\Core\Data\Services\StoreTaskService;
 use App\Core\Domain\Builders\TaskEntityBuilder;
 use App\Core\Domain\Entities\TaskEntity;
 use App\Core\Domain\Entities\UserEntity;
+use App\Core\Domain\Exceptions\AssignedUserNotFoundException;
+use App\Core\Domain\Exceptions\CreatorUserNotFoundException;
+use App\Core\Domain\Exceptions\UnauthorizedAttachedTeamException;
 use App\Core\Domain\UseCases\StoreTaskUseCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -69,6 +72,81 @@ class StoreTaskServiceTest extends TestCase
                     $task->assignedUserId === $payload['assigned_user_id'] &&
                     $task->creatorUserId === $payload['creator_user_id'];
             }));
+
+        $this->storeTaskService->storeTask($payload);
+    }
+
+    public function test_should_throw_when_a_creator_user_is_not_found(): void
+    {
+        $payload = [
+            'name' => $this->faker()->sentence(2),
+            'description' => $this->faker()->paragraph(4),
+            'status' => $this->faker()->randomElement(['OPEN', 'IN_PROGRESS', 'COMPLETED', 'REJECTED']),
+            'building_id' => $this->faker()->randomNumber(2),
+            'creator_user_id' => $this->faker()->randomNumber(2),
+            'assigned_user_id' => $this->faker()->randomNumber(2),
+        ];
+
+        $this->userRepositoryMock->expects($this->once())
+            ->method('fetchById')
+            ->willReturn(null);
+
+        $this->expectException(CreatorUserNotFoundException::class);
+
+        $this->storeTaskService->storeTask($payload);
+    }
+
+    public function test_should_throw_when_a_assigned_user_is_not_found(): void
+    {
+        $payload = [
+            'name' => $this->faker()->sentence(2),
+            'description' => $this->faker()->paragraph(4),
+            'status' => $this->faker()->randomElement(['OPEN', 'IN_PROGRESS', 'COMPLETED', 'REJECTED']),
+            'building_id' => $this->faker()->randomNumber(2),
+            'creator_user_id' => $this->faker()->randomNumber(2),
+            'assigned_user_id' => $this->faker()->randomNumber(2),
+        ];
+
+        $fakeTeamId = $this->faker()->randomNumber(2);
+        $fakeCreatorUser = new UserEntity($payload['creator_user_id'], $fakeTeamId);
+
+        $this->userRepositoryMock->expects($this->exactly(2))
+            ->method('fetchById')
+            ->willReturnMap([
+                [$payload['creator_user_id'], $fakeCreatorUser],
+                [$payload['assigned_user_id'], null],
+            ]);
+
+        $this->expectException(AssignedUserNotFoundException::class);
+
+        $this->storeTaskService->storeTask($payload);
+    }
+
+    public function test_should_throw_when_a_user_tries_to_store_a_task_to_a_non_team_member(): void
+    {
+        $payload = [
+            'name' => $this->faker()->sentence(2),
+            'description' => $this->faker()->paragraph(4),
+            'status' => $this->faker()->randomElement(['OPEN', 'IN_PROGRESS', 'COMPLETED', 'REJECTED']),
+            'building_id' => $this->faker()->randomNumber(2),
+            'creator_user_id' => $this->faker()->randomNumber(2),
+            'assigned_user_id' => $this->faker()->randomNumber(2),
+        ];
+
+        $fakeCreatorUserTeamId = $this->faker()->randomNumber(1);
+        $fakeCreatorUser = new UserEntity($payload['creator_user_id'], $fakeCreatorUserTeamId);
+
+        $fakeAssignedUserTeamId = $this->faker()->randomNumber(2);
+        $fakeAssignedUser = new UserEntity($payload['assigned_user_id'], $fakeAssignedUserTeamId);
+
+        $this->userRepositoryMock->expects($this->exactly(2))
+            ->method('fetchById')
+            ->willReturnMap([
+                [$payload['creator_user_id'], $fakeCreatorUser],
+                [$payload['assigned_user_id'], $fakeAssignedUser],
+            ]);
+
+        $this->expectException(UnauthorizedAttachedTeamException::class);
 
         $this->storeTaskService->storeTask($payload);
     }
