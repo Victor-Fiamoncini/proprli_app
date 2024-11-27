@@ -12,8 +12,8 @@ use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
-    use WithFaker;
     use RefreshDatabase;
+    use WithFaker;
 
     protected readonly Building $building;
 
