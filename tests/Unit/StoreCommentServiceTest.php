@@ -24,7 +24,7 @@ class StoreCommentServiceTest extends TestCase
     private readonly MockObject $userRepositoryMock;
     private readonly MockObject $taskRepositoryMock;
     private readonly MockObject $commentRepositoryMock;
-    private readonly StoreCommentUseCase $storeCommentService;
+    private readonly StoreCommentUseCase $storeCommentUseCase;
 
     protected function setUp(): void
     {
@@ -34,7 +34,7 @@ class StoreCommentServiceTest extends TestCase
         $this->taskRepositoryMock = $this->createMock(TaskRepository::class);
         $this->commentRepositoryMock = $this->createMock(CommentRepository::class);
 
-        $this->storeCommentService = new StoreCommentService(
+        $this->storeCommentUseCase = new StoreCommentService(
             userRepository: (object) $this->userRepositoryMock,
             taskRepository: (object) $this->taskRepositoryMock,
             commentRepository: (object) $this->commentRepositoryMock
@@ -84,7 +84,7 @@ class StoreCommentServiceTest extends TestCase
                     $comment->content === $payload['content'];
             }));
 
-        $this->storeCommentService->storeComment($payload);
+        $this->storeCommentUseCase->storeComment($payload);
     }
 
     public function test_should_throw_when_the_creator_user_is_not_found(): void
@@ -101,7 +101,7 @@ class StoreCommentServiceTest extends TestCase
 
         $this->expectException(CreatorUserNotFoundException::class);
 
-        $this->storeCommentService->storeComment($payload);
+        $this->storeCommentUseCase->storeComment($payload);
     }
 
     public function test_should_throw_when_the_task_is_not_found(): void
@@ -127,7 +127,7 @@ class StoreCommentServiceTest extends TestCase
 
         $this->expectException(TaskNotFoundException::class);
 
-        $this->storeCommentService->storeComment($payload);
+        $this->storeCommentUseCase->storeComment($payload);
     }
 
     public function test_should_throw_if_user_cant_comment_the_task(): void
@@ -173,6 +173,6 @@ class StoreCommentServiceTest extends TestCase
 
         $this->expectException(UnauthorizedToCommentException::class);
 
-        $this->storeCommentService->storeComment($payload);
+        $this->storeCommentUseCase->storeComment($payload);
     }
 }

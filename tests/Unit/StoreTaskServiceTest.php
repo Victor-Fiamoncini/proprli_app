@@ -21,7 +21,7 @@ class StoreTaskServiceTest extends TestCase
 
     private readonly MockObject $userRepositoryMock;
     private readonly MockObject $taskRepositoryMock;
-    private readonly StoreTaskUseCase $storeTaskService;
+    private readonly StoreTaskUseCase $storeTaskUseCase;
 
     protected function setUp(): void
     {
@@ -30,7 +30,7 @@ class StoreTaskServiceTest extends TestCase
         $this->userRepositoryMock = $this->createMock(UserRepository::class);
         $this->taskRepositoryMock = $this->createMock(TaskRepository::class);
 
-        $this->storeTaskService = new StoreTaskService(
+        $this->storeTaskUseCase = new StoreTaskService(
             userRepository: (object) $this->userRepositoryMock,
             taskRepository: (object) $this->taskRepositoryMock
         );
@@ -70,7 +70,7 @@ class StoreTaskServiceTest extends TestCase
                     $task->creatorUserId === $payload['creator_user_id'];
             }));
 
-        $this->storeTaskService->storeTask($payload);
+        $this->storeTaskUseCase->storeTask($payload);
     }
 
     public function test_should_throw_when_the_creator_user_is_not_found(): void
@@ -90,7 +90,7 @@ class StoreTaskServiceTest extends TestCase
 
         $this->expectException(CreatorUserNotFoundException::class);
 
-        $this->storeTaskService->storeTask($payload);
+        $this->storeTaskUseCase->storeTask($payload);
     }
 
     public function test_should_throw_when_the_assigned_user_is_not_found(): void
@@ -116,7 +116,7 @@ class StoreTaskServiceTest extends TestCase
 
         $this->expectException(AssignedUserNotFoundException::class);
 
-        $this->storeTaskService->storeTask($payload);
+        $this->storeTaskUseCase->storeTask($payload);
     }
 
     public function test_should_throw_when_a_user_tries_to_store_a_task_to_a_non_team_member(): void
@@ -145,6 +145,6 @@ class StoreTaskServiceTest extends TestCase
 
         $this->expectException(UnauthorizedAttachedTeamException::class);
 
-        $this->storeTaskService->storeTask($payload);
+        $this->storeTaskUseCase->storeTask($payload);
     }
 }
