@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Core\Data\Repositories\TaskRepository;
 use App\Core\Data\Repositories\UserRepository;
 use App\Core\Data\Services\StoreTaskService;
-use App\Core\Domain\Builders\TaskEntityBuilder;
 use App\Core\Domain\Entities\TaskEntity;
 use App\Core\Domain\Entities\UserEntity;
 use App\Core\Domain\Exceptions\AssignedUserNotFoundException;
@@ -22,7 +21,6 @@ class StoreTaskServiceTest extends TestCase
 
     private readonly MockObject $userRepositoryMock;
     private readonly MockObject $taskRepositoryMock;
-    private readonly MockObject $taskEntityBuilderMock;
     private readonly StoreTaskUseCase $storeTaskService;
 
     protected function setUp(): void
@@ -31,11 +29,10 @@ class StoreTaskServiceTest extends TestCase
 
         $this->userRepositoryMock = $this->createMock(UserRepository::class);
         $this->taskRepositoryMock = $this->createMock(TaskRepository::class);
-        $this->taskEntityBuilderMock = $this->createMock(TaskEntityBuilder::class);
 
         $this->storeTaskService = new StoreTaskService(
-            (object) $this->userRepositoryMock,
-            (object) $this->taskRepositoryMock
+            userRepository: (object) $this->userRepositoryMock,
+            taskRepository: (object) $this->taskRepositoryMock
         );
     }
 
@@ -76,7 +73,7 @@ class StoreTaskServiceTest extends TestCase
         $this->storeTaskService->storeTask($payload);
     }
 
-    public function test_should_throw_when_a_creator_user_is_not_found(): void
+    public function test_should_throw_when_the_creator_user_is_not_found(): void
     {
         $payload = [
             'name' => $this->faker()->sentence(2),
@@ -96,7 +93,7 @@ class StoreTaskServiceTest extends TestCase
         $this->storeTaskService->storeTask($payload);
     }
 
-    public function test_should_throw_when_a_assigned_user_is_not_found(): void
+    public function test_should_throw_when_the_assigned_user_is_not_found(): void
     {
         $payload = [
             'name' => $this->faker()->sentence(2),
