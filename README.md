@@ -67,6 +67,25 @@ I chose to use the Clean-Architecture approach in this Laravel application, whic
 - Keep for Laravel only the responsibility of handling the API configuration and database manipulation;
 - Keep all flows of business rules (represented by UseCases classes) and their actors (represented by Entities classes) out of the Laravel context. This allowed me to do more accurate unit testing without dealing with routes, controllers, network protocols and other technology settings that "don’t matter" for business testing.
 
+#### About the "App\Core" directories and files
+
+- App\Core: Contains all core business code and logic;
+
+Domain Layer:
+
+- App\Core\Domain\Entities: Here I've created the objects that represents the business logic;
+- App\Core\Domain\UseCases: Here I've created the protocols that defines how business logic interacts with the outside layers;
+- App\Core\Domain\Builders: These classes just handles the creation of entities, it's a good pattern, especially when the entities have nullable/optional attributes.
+
+Data Layer:
+
+- App\Data\Services: Here I've created these classes to encapsulate the logic while they interact with external resources (such as a repository, a http-client, etc);
+- App\Data\Repositories: Here I've defined the repositories protocols to be implemented in Infra layer.
+
+Infra Layer:
+
+- App\Infra\Repositories: Here I've implemented the repositories protocols defined in Data layer using Laravel/Eloquent.
+
 In my opinion using a Clean or Hexagonal architectures makes easier to make both unit and feature test and brings to us the posibility the deal with dependencies and version upgrades of frameworks without headache. Imagine if we'll decide to migrate this application to a new PHP/Laravel version or to a Symfony Framework for example, the entire piece of software that deals with business it's already implemented without depending from any external resources. Obviously, not all the projects need that, sometimes just a well implemented dependency inversion pattern is enough, but for the purposes of this technical assessment I've decided to show some of my skills and what I've been studying.
 
 ### About the REST API
