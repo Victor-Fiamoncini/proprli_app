@@ -113,7 +113,7 @@ class TaskControllerTest extends TestCase
         ]);
     }
 
-    public function test_should_get_422_after_trying_to_store_a_task_with_a_unknown_creator(): void
+    public function test_should_get_422_after_trying_to_store_a_task_with_an_unknown_creator(): void
     {
         $team = Team::factory()->has(User::factory()->count(1), 'members')->create();
         $assignedUser = $team->members->last();
@@ -140,7 +140,7 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseEmpty('tasks');
     }
 
-    public function test_should_get_422_after_trying_to_store_a_task_with_a_unknown_assign(): void
+    public function test_should_get_422_after_trying_to_store_a_task_with_an_unknown_assign(): void
     {
         $team = Team::factory()->has(User::factory()->count(2), 'members')->create();
         $creatorUser = $team->members->last();
